@@ -1,0 +1,424 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Voronoi</title>
+<style type="text/css">
+.word {
+	font-size: 24px;
+	color: #600;
+	font-weight: bold;
+}
+LINK {
+	font-size: xx-large;
+}
+.proc {
+	font-size: 25px;
+	color: #90F;
+	font-weight: bold;
+}
+</style>
+<link href="SpryAssets/SpryTabbedPanels.css" rel="stylesheet" type="text/css" />
+<script src="SpryAssets/SpryTabbedPanels.js" type="text/javascript"></script>
+</head>
+
+<body>
+<h1><p align="center">Term Project</p></h1>
+<h2><p align="center">The Voronoi Diagram</p></h2>
+
+<br />
+<div id="TabbedPanels1" class="TabbedPanels">
+
+  <ul class="TabbedPanelsTabGroup">
+    <li class="TabbedPanelsTab" tabindex="0">軟體規格書</li>
+    <li class="TabbedPanelsTab" tabindex="1">軟體安裝說明</li>
+	<li class="TabbedPanelsTab" tabindex="2">操作方法</li>
+	<li class="TabbedPanelsTab" tabindex="3">資料結構</li>
+    <li class="TabbedPanelsTab" tabindex="4">程式設計</li>
+    <li class="TabbedPanelsTab" tabindex="5">軟體測試與實驗結果</li>
+    <li class="TabbedPanelsTab" tabindex="6">結論與心得</li>
+    <li class="TabbedPanelsTab" tabindex="7">附錄</li>
+  </ul>
+  
+  <div class="TabbedPanelsContentGroup">
+  
+    <!--規格書: 包含「輸出與輸入（資料）規格」、「功能規格與介面規格」、「軟體測試規劃書」與其他有利於軟體開發之規格-->
+	<div class="TabbedPanelsContent" style = "padding: 15px;">
+		<span class = "proc">I/O規格:</span><br />
+		<table border = "1">
+			<!--標題-->
+			<tr>
+				<th>Input:</th>
+				<th>Output:</th>
+			</tr>
+			
+			<tr>
+				<td><ol>
+					<li>測資首行有一個數字 n ，表示有若干個點</li>
+					<li> n 為自然數或 0。</li>
+					<li>接下來的 n 行各有兩個數字，分別代表點的 X Y 座標。</li>
+					<li>若 n 為 0，表示EOF(結束)。</li>
+				</ol></td>
+				
+				<td><ol>
+					<li>輸出會同時包含座標點與線段資訊。</li>
+					<li>座標點在前，線段在後。</li>
+					<li>兩者皆以 Lexical Order 排序(先依 X 由大到小排序，相同則依 Y)。</li>
+					<li>座標點格式：P X Y。</li>
+					<li>線段格式：E X1 Y1 X2 Y2。</li>
+				</ol></td>
+			</tr>
+		</table>
+		
+		<p class="proc"><span class = "proc">功能規格與介面規格:</span></p>
+		<table>
+			<tr>
+				<td>
+					<p align="center"><img src="img\main_interface.png" width="720" height="540"/></p>
+				</td>
+				
+				<td  style="vertical-align: text-top; padding-left: 30px; font-size: 20px; line-height: 40px;">
+					<ul>
+					<li><b>訊息顯示板</b>: 在執行過程中，要透露給使用者的訊息都會在此顯示</li>
+					<li><b>畫布區</b>: Voronoi Diagram 做圖顯示區，大小為900 * 900</li>
+					<li><b>座標資訊板</b>: 新增點或執行跑出線段時，即時顯示排序後的所有點與線段座標資訊(依輸出檔案的格式)</li>
+					<li><b>點擊或匯入模式</b>: 軟體分成兩種輸入模式，滑鼠點擊模式與檔案匯入模式</li>
+					<li><b>動作區</b>: 執行動作分成逐步執行(Step by step)與一般執行(Run)兩種</li>
+					<li><b>功能區</b>: 匯入、輸出、清除、離開
+						<ul>
+							<li>匯入: 匯入測資檔案以進行操作，也可以讀取輸出檔案(只能顯示圖形)</li>
+							<li>輸出: 輸出執行結果(包含所有點與線段座標)</li>
+							<li>清除: 清空當前畫布，並重置所有狀態</li>
+							<li>離開: 關閉此軟體</li>
+						</ul></li>
+					<li><b>點數資訊</b>: 顯示當前畫布上的總點數</li>	
+					</ul>
+				</td>
+			</tr>
+		</table>
+		
+    </div>
+    
+	<!--軟體說明：為軟體安裝與使用之說明，請提供安裝與使用時需特別注意之要點，以減少評分之障礙。-->
+	<div class="TabbedPanelsContent" style = "padding: 15px;">
+		<span class = "proc"> 安裝說明:</span>
+		<ul style="padding-left: 30px; font-size: 20px; line-height: 40px;">
+			<li>
+				本軟體全以Java語言開發而成，開發環境是Eclipse<br />
+				可以到Eclipse的官網，根據電腦位元(32 or 64 bits)下載對應的 <b>Eclipse IDE for Java Developers</b><br />
+				<a href="http://www.eclipse.org/downloads/eclipse-packages/">http://www.eclipse.org/downloads/eclipse-packages/</a>
+			</li>
+			
+			<li>
+				本軟體使用JDK 1.8版本，可以從官網下載<br />
+				<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a>
+			</li>
+			
+			<li>
+				Java執行環境JRE下載<br />
+				<a href="http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html">http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html</a>
+			</li>
+			
+			<li>
+				軟體最後以 .jar 的 Java 執行檔格式匯出，點擊該檔案即可執行本軟體(若單純執行，也請先安裝好 JDK 或 JRE 對應的版本，以免因環境不完整而無法正常執行)
+			</li>
+			
+			<li>
+				軟體內有用到若干圖形檔(icon)，需放在與軟體同目錄下的img資料夾內，若在其他地方執行，可能讀取不到圖片
+			</li>
+		</ul>
+    </div>
+	
+	<!--程式設計：將演算法於程式設計中，需要使用的資料結構，所需注意的細節或特別的技巧，在此部分講述。如果演算法有改良之處，亦在此描述。-->
+	<div class="TabbedPanelsContent" style = "padding: 15px;">
+		<span class = "proc"> 操作方法:</span><br /><br />
+		<div style="font-size: 20px; line-height: 40px;">
+			首次打開軟體，可以先選擇測資輸入模式，預設是滑鼠點擊模式，可以透過畫面中上方的單選按鈕切換:<br />
+			<ul>
+				<li>滑鼠點擊模式: 可以直接在畫布上生成點，右上角會顯示當前點數量，左邊顯示版則會即時更新點座標資訊</li>
+				<li>檔案匯入模式: 選擇匯入，可以匯入符合格式的測試資料</li>
+			</ul>
+			輸入測試資料後，可以有兩種執行方式，直接執行會畫出最後的Voronoi Digram，相關結果可以參照<b>軟體測試與實驗結果</b><br />
+			若是以檔案匯入，每次要按鍵盤上的Enter切換不同組測資，當測資讀入會先將點資訊顯示，可以選擇要執行，或是按Enter讀取下一組測資<br />
+			以下介紹逐步執行的過程(以四個點為例):
+			<ul><ol>
+				<li>Divide: 簡述如何將測資的點數進行Divide(訊息版會顯示分成左 M 右 N 個點)</li>
+				<img src="img\step1.png" width="460" height="340" />
+				<li>以紅色線段畫出左邊Voronoi Digram</li>
+				<img src="img\step2.png" width="460" height="340" />
+				<li>以綠色線段畫出右邊Voronoi Digram</li>
+				<img src="img\step3.png" width="460" height="340" />
+				<li>以藍色線段畫出左邊Convex Hull</li>
+				<img src="img\step4.png" width="460" height="340" />
+				<li>以藍色線段畫出右邊Convex Hull</li>
+				<img src="img\step5.png" width="460" height="340" />
+				<li>以藍色線段畫出所有點的Convex Hull</li>
+				<img src="img\step6.png" width="460" height="340" />
+				<li>做出hyperplane，並銷掉多餘的線段，Voronoi Digram完成</li>
+				<img src="img\step7.png" width="460" height="340" />
+				<li>擦去Convex Hull</li>
+				<img src="img\step8.png" width="460" height="340" />
+			</ol></ul>
+		</div>
+	</div>
+	
+	<!--程式設計：將演算法於程式設計中，需要使用的資料結構，所需注意的細節或特別的技巧，在此部分講述。如果演算法有改良之處，亦在此描述。-->
+    <div class="TabbedPanelsContent" style = "padding: 15px;">
+		<span class = "proc"> 資料結構:</span><br /><br />
+		
+		<b>Point: 記錄點座標</b><br />
+<pre>
+public int x;
+public int y;
+</pre>
+		
+		<b>PDouble: 浮點數點座標(考量到求中點或畫線等行為，可能會有非整數值的情形)</b><br />
+<pre>
+public double x;
+public double y;
+</pre>
+
+		<b>TwoP: 兩點關係</b><br />
+<pre>
+public PDouble p1;
+public PDouble p2;
+
+public double midpointX(); //中點x座標
+public double midpointY(); //中點y座標
+public Point direction(); //兩點方向向量
+public double slope(); //斜率
+</pre>
+
+		<b>Line: 線段</b><br />
+<pre>
+public PDouble p_a;
+public PDouble p_b;
+private double Length;
+
+public Line toBoundX(); //將線段延長到x邊界
+public Line toBoundY(Line line); //將線段延長到y邊界
+public void change(); //將超過邊界的線段縮短交在邊界上
+public Line mLine(); //取中垂線
+</pre>
+
+		<b>ArrayList&lt;Object&gt;: 記錄各式資料集合</b><br />
+<pre>
+ArrayList<Point> point_list; //紀錄點資料
+List<Line> line_listL; //紀錄線段資料(divide的一邊)
+List<Line> line_listR; //紀錄線段資料(divide的另一邊)
+List<Line> hyperplane_list; //紀錄線段資料(hyperplane)
+List<Line> line_listAll; //紀錄線段資料(所有線段)
+</pre>
+	</div>
+	
+	<!--程式設計：將演算法於程式設計中，需要使用的資料結構，所需注意的細節或特別的技巧，在此部分講述。如果演算法有改良之處，亦在此描述。-->
+	<div class="TabbedPanelsContent" style = "padding: 15px;">
+		<div style ="font-size: 20px; line-height: 40px;">
+		整個軟體由若干個Java類別檔組成，程式主體是Voronoi.java，繼承自JFrame元件，也就是GUI視窗介面，程式都在上面實作<br /><br />
+		</div>
+	
+		<span class = "proc"> 程式設計 - GUI:</span><br />
+		<img src="img\view.png" />
+			<ul style ="font-size: 20px; line-height: 40px;">
+			原本元件都是透過JFrame的相對關係去定義位置(NORTH、SOUTH..)，但寫法很死，元件之間容易互相影響<br />
+			後來定義一個JPanel，透過setContentPane()，提供JFrame實體的內容，可以讓其他元件加入後，用座標的方式定義位置
+				<li><b>JMenu</b>: 功能同上方的功能區與動作區</li>
+				<li><b>JScrollPane</b>: 可以用滑鼠滾輪捲動的區域，上面放一個JTextArea，可以存放文字(點線座標資訊)</li>
+				<li><b>JRadioButton</b>: 用來區別不同的輸入方式(防止互相影響)</li>
+				<li><b>JLabel(圖示)</b>: "圖片按鈕"的實作，希望更一目瞭然的呈現該按鈕功能</li>
+				<li><b>JPanel(畫布)</b>: 實作滑鼠點擊事件，控制滑鼠只能在這個範圍點擊</li>
+			</ul>
+	
+		<span class = "proc"> 程式設計 - 演算法:</span><br />
+		<div style ="font-size: 20px; line-height: 40px;">
+		演算法以三個點做區別，三個點以下可以直接實作，4個點開始才要進行Divide<br />
+		</div>
+	</div>
+
+	<!--軟體測試與實驗結果：軟體之測試報告。包含測試的環境、使用的電腦硬體系統（CPU型號、記憶體容量等）、作業系統、編譯器名稱及版本。然後列出測試數據。-->
+    <!--必須列出程式可以執行之範例數據（最好列出程式可以執行之極限數據）。如果有些情況無法執行，請列出可能原因及可能解決之道。並請提供測試時之「測試輸入檔」與「測試輸出檔」。-->
+	<div class="TabbedPanelsContent" style = "padding: 15px;">
+		<span class = "proc"> 測試環境:</span><br />
+		<ul style ="font-size: 20px; line-height: 40px;">
+			<li><b>作業系統</b>: Windows 10</li>
+			<li><b>CPU</b>: Intel(R) Core(TM) i5-4590 CPU @ 3.30GHz</li>
+			<li><b>RAM</b>: 8 GB</li>
+			<li><b>JAVA版本</b>: jdk 8.0.144</li>
+		</ul>
+		
+		<span class = "proc"> 測試結果:</span><br /><br />
+		<table border = "1" align="center">
+			<!--標題-->
+			<tr>
+				<th>測資</th><th>2點-垂直線</th>
+				<th>測資</th><th>2點-水平線</th>
+			</tr>
+			<tr>
+				<td>
+				P 245 156<br />
+				P 283 156<br />
+				</td>
+				<td><img src="img\case1.png" width="400" height="400" /></td>
+				<td>
+				P 280 122<br />
+				P 280 173<br />
+				</td>
+				<td><img src="img\case2.png" width="400" height="400" /></td>
+			</tr>
+			
+			<tr>
+				<th>測資</th><th>2點-斜線</th>
+				<th>測資</th><th>3點-共線</th>
+			</tr>
+			<tr>
+				<td>
+				P 211 235<br />
+				P 485 324<br />
+				</td>
+				<td><img src="img\case3.png" width="400" height="400" /></td>
+				<td>
+				P 240 228<br />
+				P 265 228<br />
+				P 297 228<br />
+				</td>
+				<td><img src="img\case4.png" width="400" height="400" /></td>
+			</tr>
+			
+			<tr>
+				<th>測資</th><th>3點-銳角三角形</th>
+				<th>測資</th><th>3點-直角三角形</th>
+			</tr>
+			<tr>
+				<td>
+				P 182 96<br />
+				P 187 75<br />
+				P 209 91<br />
+				</td>
+				<td><img src="img\case5.png" width="400" height="400" /></td>
+				<td>
+				P 200 400<br />
+				P 400 200<br />
+				P 400 400<br />
+				</td>
+				<td><img src="img\case6.png" width="400" height="400" /></td>
+			</tr>
+			
+			<tr>
+				<th>測資</th><th>3點-鈍角三角形</th>
+				<th>測資</th><th>4點</th>
+			</tr>
+			<tr>
+				<td>
+				P 170 47<br />
+				P 239 69<br />
+				P 402 50<br />
+				</td>
+				<td><img src="img\case7.png" width="400" height="400" /></td>
+				<td>
+				P 266 229<br />
+				P 267 380<br />
+				P 507 424<br />
+				P 587 359<br />
+				</td>
+				<td><img src="img\case8.png" width="400" height="400" /></td>
+			</tr>
+			
+			<tr>
+				<th>測資</th><th>4點-正方形</th>
+				<th>測資</th><th>4點-菱形</th>
+			</tr>
+			<tr>
+				<td>
+				P 100 100<br />
+				P 100 200<br />
+				P 200 100<br />
+				P 200 200<br />
+				</td>
+				<td><img src="img\case9.png" width="400" height="400" /></td>
+				<td>
+				P 103 200<br />
+				P 193 64<br />
+				P 193 370<br />
+				P 283 200<br />
+				</td>
+				<td><img src="img\case10.png" width="400" height="400" /></td>
+			</tr>
+			
+			<tr>
+				<th>測資</th><th>4點-三角形(失敗)</th>
+				<th>測資</th><th>多點(失敗)</th>
+			</tr>
+			<tr>
+				<td>
+				P 233 276<br />
+				P 330 229<br />
+				P 331 179<br />
+				P 432 275<br />
+				</td>
+				<td><img src="img\case11.png" width="400" height="400" /></td>
+				<td>
+				P 186 114<br />
+				P 221 104<br />
+				P 303 125<br />
+				P 386 146<br />
+				P 446 148<br />
+				</td>
+				<td><img src="img\case12.png" width="400" height="400" /></td>
+			</tr>
+		</table>
+    </div>
+	
+	<!--說明所得結論、可以改良之處與心得等。-->
+    <div class="TabbedPanelsContent" style = "padding: 15px;">
+		<span class = "proc"> 結論:</span><br />
+			<ul style ="font-size: 20px; line-height: 40px;">
+				<li>我的做法在3個點以內都沒問題，4個點有部分會出錯，更多點也無法解決</li>
+				<li>Hyperplane的寫法太死，沒辦法處理4個點時Convex Hull為3個點的情況(有點在內部)</li>
+				<li>Coding方面自覺不夠精簡，像是處理兩個點相關的方法，同時用了TwoP、LIne等類別。由於在不同的時空下才分開寫，或許可以有相當程度的整合</li>
+			</ul>
+		<span class = "proc"> 心得:</span><br />
+			<ul style ="font-size: 20px; line-height: 40px;">
+				<li>這是一個結合數種元素的大作業，一個程式包含了數學運算、繪圖、GUI設計，要耗費相當的時間精力才有可能做到相當的進度</li>
+				<li><b>數學運算</b>: 在思考每一個演算法細節的過程，要了解許多數學名詞的定義、用途，公式如何實作，像是很簡單的線段公式，如何以程式表達，都是在進行這個project時要克服的</li>
+				<li><b>繪圖</b>: 雖然以前有程式繪圖的經驗，這次的難處在於逐步執行，哪一個步驟要畫什麼，哪一個步驟要擦掉什麼，紙上談兵很是容易。後來發現repaint()的用法，配上一些布林變數才解決這個問題</li>
+				<li><b>GUI設計</b>: 或許我在這方面所花的時間不亞於主要的演算法。有時候我們常常拿到一張白紙，就算知道要畫什麼，卻不知道從何畫起。
+				我一向注重使用者體驗，所以花了不少時間思考與規畫要如何呈現，介面也好、排版也好，甚至是後來想到用JPanel元件搭上圖片底圖，也希望能一目瞭然，設計上相對浪費不少時間，後來也發現視窗大小寫死了，之後的設計或許會參考動態配置等等的方法</li>
+			</ul>
+		<div style ="font-size: 20px; line-height: 40px;">
+		整體而言，這次的方向是想到什麼就往那個方向寫，所以細看程式部分會顯得東一塊西一塊(也無法針對某些特別case)，後來也因為到了四個點，卻想不出實作更多點的作法作罷，實屬可惜。
+		如果要進一步改良，或許要重新思考與定義實作方法，用不同的思維去看待整個問題，才有改善的可能。對我來說，這是一個很有分量的挑戰，透過這些過程，才了解程式設計原來可以這樣博大精深
+		</div>
+	</div>
+	
+	<!--請連結「程式原始碼合併檔」、「測試輸入檔」、「測試輸出檔」等與報告相關之資料。-->
+    <div class="TabbedPanelsContent" style = "padding: 15px;">
+		<span class = "proc"> 相關資源下載:</span>
+		<ul style="padding-left: 30px; font-size: 20px; line-height: 40px;">
+			<li>
+				測資輸入檔(單擊為檢視，下載請在連結點右鍵，選擇另存連結為..)<br />
+				<a href="download/vd_testdata_pure.in">範例無註解版本</a><br />
+				<a href="download/vd_testdata.in">範例有註解版本</a><br />
+				<a href="download/test.in">自己測試版範本</a>
+			</li>
+			
+			<li>
+				輸出檔範本<br />
+				<a href="download/sample.out">載點</a>
+			</li>
+			
+			<li>
+				執行檔(.jar與img資料夾請解壓縮到相同目錄下)<br />
+				<a href="download/Voronoi_exe.rar">載點</a>
+			</li>
+    </div>
+  </div>
+</div>
+<p>&nbsp;</p>
+<center>Designed by : maxi67 @2017</center>
+<p><br />
+</p>
+<script type="text/javascript">
+var TabbedPanels1 = new Spry.Widget.TabbedPanels("TabbedPanels1", {defaultTab:0});
+</script>
+</body>
+</html>
