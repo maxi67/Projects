@@ -37,7 +37,7 @@ let powerdot = {
 function init(){
 	let can = document.createElement('canvas');
 	let container = document.querySelector("#main_container");
-	container.innerHTML = ""; //clear chhose mode
+	container.innerHTML = ""; //clear choose mode
 	can.width = 600;
 	can.height = 400;
 	
@@ -74,10 +74,12 @@ function init(){
 	btn_easy.textContent = "Let Me Stronger!";
 	
 	btn_stop.onclick = function (){
-		container.innerHTML="";
+		level = 0;
+		container.innerHTML = "";
 	//	chooseMode();
 	};
 	btn_easy.onclick = function (){
+		btn_easy.textContent = "Good Luck:P";
 		player.speed += 10;
 		btn_easy.disabled = true;
 	};
@@ -95,72 +97,73 @@ function init(){
 function chooseMode(){
 	let container = document.querySelector("#main_container");
 	container.innerHTML="";
-	
-	let label = document.createElement("label");
-	label.textContent = "Choose mode:";
-	label.style.fontSize = "30px";
-	label.className = "btn_mode";
-	
-	let p_1 = document.createElement("p");
-	let p_2 = document.createElement("p");
-	let p_3 = document.createElement("p");
-	let p_4 = document.createElement("p");
-	let p_5 = document.createElement("p");
-	
-	let btn1 = document.createElement("button");
-	let btn2 = document.createElement("button");
-	let btn3 = document.createElement("button");
-	let btn4 = document.createElement("button");
-	let btn5 = document.createElement("button");
-	
-	btn1.textContent = "Super Easy";
-	btn2.textContent = "Easy";
-	btn3.textContent = "Normal";
-	btn4.textContent = "Hard";
-	btn5.textContent = "Boss";
+
+	var p_set = new Array(document.createElement("p"),
+		document.createElement("p"),
+		document.createElement("p"),
+		document.createElement("p"),
+		document.createElement("p"),
+		document.createElement("p"),
+		document.createElement("p"));
 		
-	btn1.onclick = function (){
+	var comp_set = new Array(document.createElement("img"),
+		document.createElement("label"),
+		document.createElement("button"),
+		document.createElement("button"),
+		document.createElement("button"),
+		document.createElement("button"),
+		document.createElement("button"));
+	
+	//IMG
+	comp_set[0].src = 'img/cover.png';
+	
+	//Label
+	comp_set[1].textContent = "Choose Mode";
+	comp_set[1].style.fontSize = "30px";
+	comp_set[1].style.fontFamily = "Lobster";
+	
+	//Buttons
+	comp_set[2].textContent = "Super Easy";
+	comp_set[3].textContent = "Easy";
+	comp_set[4].textContent = "Normal";
+	comp_set[5].textContent = "Hard";
+	comp_set[6].textContent = "Boss";
+		
+	comp_set[2].onclick = function (){
 		level = 1;
 		enemy.speedbase = 1;
 		init();
 	};
 	
-	btn2.onclick = function (){
+	comp_set[3].onclick = function (){
 		level = 2;
 		enemy.speedbase = 2;
 		init();
 	};
 	
-	btn3.onclick = function (){
+	comp_set[4].onclick = function (){
 		level = 3;
-		enemy.speedbase = 3;
+		enemy.speedbase = 4;
 		init();
 	};
 	
-	btn4.onclick = function (){
+	comp_set[5].onclick = function (){
 		level = 4;
 		enemy.speedbase = 6;
 		init();
 	};
 	
-	btn5.onclick = function (){
+	comp_set[6].onclick = function (){
 		level = 5;
 		enemy.speedbase = 12;
 		init();
 	};
 	
-
-	p_1.appendChild(btn1);
-	p_2.appendChild(btn2);
-	p_3.appendChild(btn3);
-	p_4.appendChild(btn4);
-	p_5.appendChild(btn5);
-	container.appendChild(label);
-	container.appendChild(p_1);
-	container.appendChild(p_2);
-	container.appendChild(p_3);
-	container.appendChild(p_4);
-	container.appendChild(p_5);
+	for (let i = 0; i < p_set.length; i++){
+		p_set[i].appendChild(comp_set[i]);
+		p_set[i].align = "Center";
+		container.appendChild(p_set[i]);
+	}
 }
 
 function move(keyClick){
@@ -215,7 +218,9 @@ function getRandom(n){
 	return Math.floor(Math.random()*n);
 }
 
-function render(){	
+function render(){
+	if (level == 0)
+		return;
 	let can = document.querySelector("canvas");
 	let context = can.getContext('2d');
 	context.fillStyle = "black";
@@ -237,14 +242,21 @@ function render(){
 	
 	// Enemy Move
 	if (enemy.moving < 0){
-		enemy.moving = (getRandom(30)*3)+getRandom(1);
-		enemy.speed = (getRandom(enemy.speedbase)+1)/2; //speed
+		if (level >= 4) { 
+			enemy.moving = (getRandom(20))+1;
+		}
+		else {
+			enemy.moving = (getRandom(30)*3)+getRandom(1);
+		}	
+		
 		enemy.dirx = 0;
 		enemy.diry = 0;
+		enemy.speed = (getRandom(enemy.speedbase)+1)/2; //speed
 		
 		//enemy run away
 		if (powerdot.eaten)
-			enemy.speed = -0.5;
+			enemy.speed = -0.5;	
+			
 
 		if (enemy.moving % 2){
 			if (player.x < enemy.x)
@@ -252,6 +264,7 @@ function render(){
 			else
 				enemy.dirx = enemy.speed;
 		}
+			
 		else {
 			if (player.y < enemy.y)
 				enemy.diry = -enemy.speed;
@@ -307,6 +320,7 @@ function render(){
 	
 	//Judge winner
 	if (score >= 10 || gscore >= 10){
+		level = 0;
 		let container = document.querySelector("#main_container");
 		container.innerHTML = ""; //clear chhose mode
 		
@@ -367,9 +381,12 @@ function render(){
 	//src,xfrom,yfrom,xwidth,ywidth,posx,posy,xwidth,ywidth
 	context.drawImage(mainImage,enemy.ghostNum,enemy.flash,32,32,enemy.x,enemy.y,32,32);
 	context.drawImage(mainImage,player.pacmouth,player.pacdir,32,32,player.x,player.y,32,32);
-
-	let board = document.querySelector("#board");
-	board.innerHTML = "PC-Man :"+score+" VS Ghost :" + gscore;
+	
+	if (level > 0){
+		let board = document.querySelector("#board");
+		board.innerHTML = "PC-Man :"+score+" VS Ghost :" + gscore;
+	}
+	
 	
 }
 
