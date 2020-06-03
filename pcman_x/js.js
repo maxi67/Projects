@@ -1,4 +1,4 @@
-let level = 2,
+let level = 0,
 	score = 0,
 	gscore = 0,
 	countblink = 10,
@@ -17,7 +17,7 @@ let enemy = {
 	x: 200,
 	y: 150,
 	speed: 0,
-	speedbase: 5,
+	speedbase: 0,
 	dirx: 0,
 	diry: 0,
 	ghostNum: 0,
@@ -44,7 +44,7 @@ function init(){
 	mainImage = new Image();
 	mainImage.ready = false;
 	mainImage.onload = checkReady;
-	mainImage.src = 'pac.png';
+	mainImage.src = 'img/pac.png';
 
 	let keyClick = {};
 	document.addEventListener("keydown", function(event){
@@ -78,7 +78,7 @@ function init(){
 	//	chooseMode();
 	};
 	btn_easy.onclick = function (){
-		player.speed = 20;
+		player.speed += 10;
 		btn_easy.disabled = true;
 	};
 	
@@ -90,7 +90,6 @@ function init(){
 	container.appendChild(div_btn);
 	container.appendChild(div_board);
 	container.appendChild(can);
-	
 }
 
 function chooseMode(){
@@ -104,12 +103,21 @@ function chooseMode(){
 	
 	let p_1 = document.createElement("p");
 	let p_2 = document.createElement("p");
+	let p_3 = document.createElement("p");
+	let p_4 = document.createElement("p");
+	let p_5 = document.createElement("p");
 	
 	let btn1 = document.createElement("button");
 	let btn2 = document.createElement("button");
+	let btn3 = document.createElement("button");
+	let btn4 = document.createElement("button");
+	let btn5 = document.createElement("button");
 	
 	btn1.textContent = "Super Easy";
-	btn2.textContent = "Normal";
+	btn2.textContent = "Easy";
+	btn3.textContent = "Normal";
+	btn4.textContent = "Hard";
+	btn5.textContent = "Boss";
 		
 	btn1.onclick = function (){
 		level = 1;
@@ -118,15 +126,41 @@ function chooseMode(){
 	};
 	
 	btn2.onclick = function (){
+		level = 2;
+		enemy.speedbase = 2;
+		init();
+	};
+	
+	btn3.onclick = function (){
+		level = 3;
+		enemy.speedbase = 3;
+		init();
+	};
+	
+	btn4.onclick = function (){
+		level = 4;
+		enemy.speedbase = 6;
+		init();
+	};
+	
+	btn5.onclick = function (){
+		level = 5;
+		enemy.speedbase = 12;
 		init();
 	};
 	
 
 	p_1.appendChild(btn1);
 	p_2.appendChild(btn2);
+	p_3.appendChild(btn3);
+	p_4.appendChild(btn4);
+	p_5.appendChild(btn5);
 	container.appendChild(label);
 	container.appendChild(p_1);
 	container.appendChild(p_2);
+	container.appendChild(p_3);
+	container.appendChild(p_4);
+	container.appendChild(p_5);
 }
 
 function move(keyClick){
@@ -193,6 +227,7 @@ function render(){
 		powerdot.powerup = true;
 	}
 
+	// Create enemy
 	if (!ghost){
 		enemy.ghostNum = getRandom(5) * 64;
 		enemy.x = getRandom(450)+30;
@@ -200,6 +235,7 @@ function render(){
 		ghost = true;
 	}
 	
+	// Enemy Move
 	if (enemy.moving < 0){
 		enemy.moving = (getRandom(30)*3)+getRandom(1);
 		enemy.speed = (getRandom(enemy.speedbase)+1)/2; //speed
@@ -267,6 +303,38 @@ function render(){
 		powerdot.ghostNum = enemy.ghostNum;
 		enemy.ghostNum = 384;
 		powerdot.eaten = true;
+	}
+	
+	//Judge winner
+	if (score >= 10 || gscore >= 10){
+		let container = document.querySelector("#main_container");
+		container.innerHTML = ""; //clear chhose mode
+		
+		let p_1 = document.createElement("p");
+		let p_2 = document.createElement("p");
+		let p_3 = document.createElement("p");
+		p_1.align = "Center";
+		p_2.align = "Center";
+		p_3.align = "Center";
+
+		let img = document.createElement("img");	
+		if (score >= 10)
+			img.src = 'img/win.png';
+		else
+			img.src = 'img/lose.png';
+		
+		let label = document.createElement("label");
+		let label2 = document.createElement("label");
+		label.textContent = "挑戰不同難度試試吧！";
+		label2.textContent = "按 F5 或重新整理網頁以繼續...";
+		label.style.fontSize = "30px";
+		label2.style.fontSize = "20px";
+		p_1.appendChild(img);
+		p_2.appendChild(label);
+		p_3.appendChild(label2);
+		container.appendChild(p_1);
+		container.appendChild(p_2);
+		container.appendChild(p_3);
 	}
 	
 	if (powerdot.eaten){
